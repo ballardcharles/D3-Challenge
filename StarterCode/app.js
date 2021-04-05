@@ -13,7 +13,7 @@ var width = svgWidth - margin.left - margin.right;
 var height = svgHeight - margin.top - margin.bottom;
 
 // Create an SVG wrapper, append an SVG group that will hold our chart, and shift the latter by left and top margins.
-var svg = d3.select(".chart")
+var svg = d3.select("#scatter")
   .append("svg")
   .attr("width", svgWidth)
   .attr("height", svgHeight);
@@ -21,7 +21,7 @@ var svg = d3.select(".chart")
 var chartGroup = svg.append("g")
   .attr("transform", `translate(${margin.left}, ${margin.top})`);
 
-d3.csv("../data/data.csv").then(function(healthData) {
+d3.csv("data.csv").then(function(healthData) {
 
     // Parse Data as numbers
     healthData.forEach((data) => {
@@ -31,11 +31,11 @@ d3.csv("../data/data.csv").then(function(healthData) {
 
     // Create scale functions
     var xPovertyScale = d3.scaleLinear()
-      .domain([25, d3.max(healthData, d => d.poverty)])
+      .domain([8, d3.max(healthData, d => d.poverty)])
       .range([0, width]);
 
     var yHealthCareScale = d3.scaleLinear()
-      .domain([0, d3.max(healthData, d => d.healthcare)])
+      .domain([0, d3.max(healthData, d => d.healthcare + 5)])
       .range([height, 0]);
 
     // Create axis functions
@@ -50,6 +50,7 @@ d3.csv("../data/data.csv").then(function(healthData) {
     chartGroup.append("g")
         .call(leftAxis)
 
+    // Create circles
     var stateCircle = chartGroup.selectAll("circle")
     .data(healthData)
     .enter()
@@ -59,5 +60,38 @@ d3.csv("../data/data.csv").then(function(healthData) {
     .attr("r", "5")
     .attr("fill", "light blue")
 
+    // initialize tool tip
+    var toolTip = d3.tip()
+        .attr("class", "tooltip")
+        .offset(80,-60)
+        .html(function(d){
+            return (`${d.state}<br>Poverty: ${d.poverty} <br>Health Care: ${d.healthcare}`)
+        });
     
+    // Create tool tip in chart
+    chartGroup.call(toolTip)
+
+    // create event listeners to display and hide tool tip
+    stateCircle.on("mouseover", function(data) {
+        toolTip.show(data, this)
+    })
+        .on("mouseout", function(data) {
+            toolTip.hide(data)
+        });
+    
+    // Create axis labels
+    chartGroup.append("text")
+        .attr("transform", "rotate(-90)")
+        .attr("y", 0 - margin.left + 40)
+        .attr("x", 0 - (height / 2))
+        .attr("dy", "1em")
+        .attr("class", "axisText")
+        .attr("Lacks Healthcare %")
+    
+    chartGroup.append("text")
+        .attr("transform", `translate(${width / 2}, ${height + margin.top + 30})`)
+        .attr("class", "axisText")
+        .attr("Poverty Rate %")
+}).catch(function(error) {
+    console.log(error)
 })
