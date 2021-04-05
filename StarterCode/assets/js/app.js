@@ -31,10 +31,33 @@ d3.csv("../data/data.csv").then(function(healthData) {
 
     // Create scale functions
     var xPovertyScale = d3.scaleLinear()
-      .domain([20, d3.max(healthData, d => d.poverty)])
+      .domain([25, d3.max(healthData, d => d.poverty)])
       .range([0, width]);
 
     var yHealthCareScale = d3.scaleLinear()
       .domain([0, d3.max(healthData, d => d.healthcare)])
       .range([height, 0]);
+
+    // Create axis functions
+    var bottomAxis = d3.axisBottom(xPovertyScale);
+    var leftAxis = d3.axisLeft(yHealthCareScale);
+
+    // append axis to chart
+    chartGroup.append("g")
+        .attr("transform", `translate(0, ${height}`)
+        .call(bottomAxis)
+    
+    chartGroup.append("g")
+        .call(leftAxis)
+
+    var stateCircle = chartGroup.selectAll("circle")
+    .data(healthData)
+    .enter()
+    .append("circle")
+    .attr("cx", d => xPovertyScale(d.poverty))
+    .attr("cy", d => yHealthCareScale(d.healthcare))
+    .attr("r", "5")
+    .attr("fill", "light blue")
+
+    
 })
