@@ -13,7 +13,7 @@ var width = svgWidth - margin.left - margin.right;
 var height = svgHeight - margin.top - margin.bottom;
 
 // Create an SVG wrapper, append an SVG group that will hold our chart, and shift the latter by left and top margins.
-var svg = d3.select("#scatter")
+var svg = d3.select(".scatter")
   .append("svg")
   .attr("width", svgWidth)
   .attr("height", svgHeight);
@@ -44,7 +44,7 @@ d3.csv("data.csv").then(function(healthData) {
 
     // append axis to chart
     chartGroup.append("g")
-        .attr("transform", `translate(0, ${height}`)
+        .attr("transform", `translate(0, ${height})`)
         .call(bottomAxis)
     
     chartGroup.append("g")
@@ -57,14 +57,14 @@ d3.csv("data.csv").then(function(healthData) {
     .append("circle")
     .attr("cx", d => xPovertyScale(d.poverty))
     .attr("cy", d => yHealthCareScale(d.healthcare))
-    .attr("r", "5")
-    .attr("fill", "light blue")
+    .attr("r", "10")
+    .attr("fill", "blue")
 
     // initialize tool tip
     var toolTip = d3.tip()
         .attr("class", "tooltip")
-        .offset(80,-60)
-        .html(function(d){
+        .offset([80,-60])
+        .html(function(d) {
             return (`${d.state}<br>Poverty: ${d.poverty} <br>Health Care: ${d.healthcare}`)
         });
     
@@ -81,17 +81,17 @@ d3.csv("data.csv").then(function(healthData) {
     
     // Create axis labels
     chartGroup.append("text")
-        .attr("transform", "rotate(-90)")
-        .attr("y", 0 - margin.left + 40)
-        .attr("x", 0 - (height / 2))
-        .attr("dy", "1em")
-        .attr("class", "axisText")
-        .attr("Lacks Healthcare %")
+      .attr("transform", "rotate(-90)")
+      .attr("y", 0 - margin.left / 2)
+      .attr("x", 0 - (height / 2))
+      .attr("dy", "1em")
+      .attr("class", "axisText")
+      .attr("Lacks Healthcare %")
     
     chartGroup.append("text")
-        .attr("transform", `translate(${width / 2}, ${height + margin.top + 30})`)
-        .attr("class", "axisText")
-        .attr("Poverty Rate %")
+      .attr("transform", `translate(${width / 2}, ${height + margin.top})`)
+      .attr("class", "axisText")
+      .attr("Poverty Rate %")
 }).catch(function(error) {
     console.log(error)
 })
