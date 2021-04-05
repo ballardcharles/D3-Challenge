@@ -58,7 +58,18 @@ d3.csv("data.csv").then(function(healthData) {
     .attr("cx", d => xPovertyScale(d.poverty))
     .attr("cy", d => yHealthCareScale(d.healthcare))
     .attr("r", "10")
-    .attr("fill", "blue")
+    .classed("stateCircle", true)
+    
+    chartGroup.append("g")
+        .selectAll("text")
+        .data(healthData)
+        .enter()
+        .append("text")
+        .attr("x", d => xPovertyScale(d.poverty))
+        .attr("y", d => yHealthCareScale(d.healthcare))
+        .text(d => d.abbr)
+        .classed("stateText", true)
+        .attr("alignment-baseline", "central")
 
     // initialize tool tip
     var toolTip = d3.tip()
