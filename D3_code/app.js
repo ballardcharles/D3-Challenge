@@ -99,9 +99,9 @@ d3.csv("data.csv").then(function(healthData) {
         .text("Lacks Healther (%)");
   
     chartGroup.append("text")
-        .attr("transform", `translate(${width / 2}, ${height + margin.top + 30})`)
+        .attr("transform", `translate(${width / 2}, ${height + margin.top + 20})`)
         .attr("class", "axisText")
-        .text("Poverty Rate (%)ßß");
+        .text("Poverty Rate (%)");
     
 }).catch(function(error) {
     console.log(error)
